@@ -1,0 +1,33 @@
+
+body {
+    background: burlywood;
+    display:flex;
+
+  }
+
+  canvas {
+    border: solid 1px white;
+  }
+
+  #linea {
+    position: absolute;
+    border-bottom: 1px solid black;
+    
+  }
+
+  .principal{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .tablero{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .tablero p{
+    display: inline-block;
+    margin: 0 15px;
+  }
