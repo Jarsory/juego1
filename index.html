@@ -8,19 +8,41 @@
     <link href='styles.css' rel='stylesheet'>
 </head>
 <body>
-    <p>Juego Múltiplos Snake</p>
-    <div class="principal">
-        <div class="tablero">
-            <p id="nivel">Nivel</p>
-            <p id="vidas">Vidas</p>
-            <p id="tiempo">Tiempo</p>
-            <p id="puntos">Puntos</p>      
+   <div>
+        <div>
+            <p>Juego Múltiplos Snake</p>
+            <button id="instrucciones" type="button"><b>INSTRUCCIONES</b></button>
+            <h3 class="uk-modal-title">Instructions</h3>
+                  <p>Ayudanos a capturar todos los numeros que se pueden dividir entre 8, es decir los multiplos de 8 <br>
+                    Mueve las flechas para desplazarte <br>
+                    Usa la barra espaciadora para disparar  <br>
+                    Cuidado con los que no son divisores o multiplos del número que te piden <br>
+                    
+                    El juego es por turnos y tiempos para cada jugador<br>
+                    Gana quien logre reunir más puntos, SUERTE!</p>
+            <button id="empezar" type="button"><b>EMPEZAR</b></button>
+            <br>
+            <br>
+
+            <button id="jugador1Button" class="uk-button"><b>JUGADOR 1</b></button>
+            <button id="jugador2Button" class="uk-button" onclick="empieza2()"><b>JUGADOR 2</b></button>
+            <button id="restaurarButton" class="disp"><b>RESTAURAR</b></button>
+            <button id="restart2Button" class="disp"><b>SIGUIENTE JUGADOR</b></button>  
+        
+        </div>
+        <br>
+        <br>
+        
+        <div class="principal">
+            <div class="tablero">
+                <p id="nivel">Nivel</p>
+                <p id="vidas">Vidas</p>
+                <p id="tiempo">Tiempo</p>
+                <p id="puntos">Puntos</p>
+                <p id="numeroMultiplicador"></p>
+            </div>    
         </div>
         <canvas width="800" height="500" id="game"></canvas>
-    </div>
-    <div id="linea">
-        divisor
-    
     </div>
     
     <script src='main.js'></script>

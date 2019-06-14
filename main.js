@@ -10,7 +10,36 @@ var multiplos = [];
 var distractores = [];
 var bullets = [];
 
+var tablaInicial = Math.floor(Math.random()*(10)+1);
+
+let numeroMultiplicador = document.getElementById('numeroMultiplicador')
+
+numeroMultiplicador.innerHTML = 'tabla ' + tablaInicial;
+
 // FUNCIONES PRINCIPALES
+
+function empieza1(){
+    tablaInicial = Math.floor(Math.random()*(10)+1);
+
+    numeroMultiplicador.innerHTML = 'tabla ' + tablaInicial;
+
+    clear();
+    multiplos= [];
+    distractores = [];
+
+}
+
+function empieza2(){
+    tablaInicial = Math.floor(Math.random()*(10)+1);
+
+    numeroMultiplicador.innerHTML = 'tabla ' + tablaInicial;
+
+    clear();
+    multiplos= [];
+    distractores = [];
+
+}
+
 
 
 // CLASES
@@ -22,6 +51,7 @@ class Snake{
         this.w = w;
         this.h = h;
         this.life = 5;
+        this.puntos = 0;
         this.speedx = 0;
         this.speedy = 0;
     }
@@ -29,10 +59,12 @@ class Snake{
     draw(){
         ctx.fillStyle = 'green'
         ctx.fillRect(this.x,this.y,this.w,this.h);
-
     }
 
     newPos (){
+        //antes de asignar la nueva posicion, 
+        //verificar que este dentro de los limites del canvas
+        // si sale, entonces la coordenada es igual al limite
         this.x = this.x + this.speedx;
         this.y = this.y + this.speedy;
     }
@@ -58,15 +90,34 @@ class Multiplos {
         this.w = w;
         this.h = h;
         this.n = n;
+        this.randomDistractor = this.checkMultiple( tablaInicial );
     }
     draw() {
-        //this.y += 2;
         ctx.fillStyle = 'blue';
         ctx.fillRect(this.x, this.y, this.w, this.h);
+        ctx.fillStyle = 'red';
+        ctx.font = "18pt sans-serif";
+        ctx.fillText(this.randomDistractor, this.x+15, this.y+30);
+    }
+    //azules
+
+    checkMultiple(num){
+        let multiNumber = 0; 
+        for( let i = 1; i <= 10 ; i++ ){
+            let x = Math.floor(Math.random()*(i)+1);
+            multiNumber = x;
+        }
+        let numX = num*multiNumber;
+        return numX;
     }
     
 }
 
+
+
+
+ 
+ 
 class Distractores {
     constructor(x, y, w, h,n) {
         this.x = x;
@@ -74,11 +125,28 @@ class Distractores {
         this.w = w;
         this.h = h;
         this.n = n;
+        this.randomDistractor = this.checkDistractor( tablaInicial );
     }
     draw() {
         //this.y += 2;
         ctx.fillStyle = 'yellow';
         ctx.fillRect(this.x, this.y, this.w, this.h);
+        ctx.fillStyle = 'black';
+        ctx.font = "18pt sans-serif";
+        ctx.fillText(this.randomDistractor, this.x+15, this.y+30);
+    
+        
+    }
+    checkDistractor(num){
+
+        let multiNumber = 0; 
+        for( let i = 1; i <= 10 ; i++ ){
+            let x = Math.floor(Math.random()*(i)+1);
+            multiNumber = x;
+        }
+        let numX = num*multiNumber;
+        return numX + 1;
+       
     }
     
 }
@@ -121,13 +189,38 @@ function text() {
 
 var snake= new Snake(20,100,50,50);
 
-
+/*function randomDistractor(min,max)
+{
+    return Math.floor(Math.random()*(100))
+}*/
 
 function generateMultiplos() {
-    if(frames % 180 === 0) {
-        multiplos.push(new Multiplos(Math.floor(Math.random() * 700),Math.floor(Math.random() * 400),50,50));
+
+    let newMUltiplo = new Multiplos(Math.floor(Math.random() * 700),Math.floor(Math.random() * 400),50,50);
+
+    let n = newMUltiplo;
+
+    //Verificar que no se sobreponga con multiplos y distractores
+    if( multiplos.length == 0 ){
+        //if no choca push
+        multiplos.push( newMUltiplo );
+        //else genera nuevas coordenadas
     }
+
+    multiplos.forEach( elem => {
+        let { x,y,w,h } = elem;
+        
+        if( n.x >= x && n.x <= x+w && n.y >= y && n.y <= y+h  ){
+            
+        }else{
+            if(frames % 240 === 0) {
+                multiplos.push( newMUltiplo );
+            }        
+        }     
+    })
 }
+
+
 
 function drawMultiplos() {
     multiplos.forEach(function(multiplo, i) {
@@ -135,11 +228,39 @@ function drawMultiplos() {
     })
 }
 
-function generateDistractores() {
-    if(frames % 180 === 0) {
+/*function generateDistractores() {
+    if(frames % 240 === 0) {
         distractores.push(new Distractores(Math.floor(Math.random() * 700),Math.floor(Math.random() * 400),50,50));
     }
+}*/
+
+function generateDistractores() {
+
+    let newDistractor = new Distractores(Math.floor(Math.random() * 700),Math.floor(Math.random() * 400),50,50);
+
+   
+    let n = newDistractor;
+
+   
+
+    if( distractores.length == 0 ){
+        distractores.push( newDistractor );
+    }
+
+    distractores.forEach( elem => {
+        let { x,y,w,h } = elem;
+        
+        if( n.x >= x && n.x <= x+w && n.y >= y && n.y <= y+h  ){
+            
+        }else{
+            if(frames % 240 === 0) {
+                distractores.push( newDistractor );
+            }        
+        }     
+    })
 }
+
+
 
 function drawDistractores() {
     distractores.forEach(function(distractor, i) {
@@ -162,6 +283,7 @@ function checkCollition() {
     multiplos.forEach((multiplo, mi) => {
         if(snake.crashWith(multiplo)) {
             multiplos.splice(mi,1);
+            snake.puntos++
             //player.life--;
             //console.log(player.life)
             console.log("Colisiones")
@@ -194,14 +316,15 @@ function checkCollition() {
 }
 
 
-
-
-
-
-
 function start (){
     let nivel = document.getElementById('nivel');
-    nivel.innerHTML = 'Multiplos ' + multiplos.length; 
+    nivel.innerHTML = 'NIVEL 1 '  
+    let vidas = document.getElementById('vidas');
+    vidas.innerHTML = 'vidas ' + snake.life;
+    let tiempo = document.getElementById('tiempo');
+    tiempo.innerHTML = 'tiempo' + multiplos.length;
+    let puntos = document.getElementById('puntos');
+    puntos.innerHTML = 'puntos' + snake.puntos;
     clear();
     generateMultiplos();
     drawMultiplos();
@@ -211,6 +334,8 @@ function start (){
     drawDistractores();
     drawBullets();
     checkCollition();
+    checkGame();
+    
     
     frames += 1
 }
@@ -219,23 +344,47 @@ function clear(){
     ctx.clearRect(0, 0, 800,500);
 }
 
+function gameOver() {
+    clearInterval(interval);
+    ctx.font = "60px Avenir";
+    ctx.fillStyle = "red";
+    ctx.fillText("GAME OVER", 190, 220);
+    ctx.font = "40px Avenir";
+    ctx.fillText("presiona la letra 'B' para reinicar", 140, 260);
+    gameOver = true;
+  }
+
+  function checkGame() {
+    if (snake.life===0) {
+        return gameOver();
+      }
+    }
+  
+
 interval= setInterval(start,1000/60);
+
+// start();
+// start();
 
 // listeners
 
 window.addEventListener('keydown',function(e){
     if(e.keyCode ===37){
-        snake.speedx = -1;
+        snake.speedx = -2;
     }
     if(e.keyCode ===38){
-        snake.speedy = -1;
+        snake.speedy = -2;
     }
     if(e.keyCode ===39){
-        snake.speedx = 1;
+        snake.speedx = 2;
     }
     if (e.keyCode ===40){
-        snake.speedy = 1;
+        snake.speedy = 2;
     }
+    if(gameOver && e.keyCode === 66) {
+        location.reload();
+      }
+    
 });
 
 window.addEventListener('keyup',function(e){
@@ -257,6 +406,7 @@ window.addEventListener('keypress', function(e) {
     if(e.keyCode === 32) {
         generateBullets();
     }
+    
 })
 
 // //Elementos
